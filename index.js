@@ -14,10 +14,14 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 async function run(){
      try{
-          const ServicesCollection = client.db("TimberKitchen").collection("test");
-          const user = {name: 'Meraj', age: 20, email: 'meraj123@gmail.com'}
-          const result = await ServicesCollection.insertOne(user)
-          console.log(result);
+          const ServicesCollection = client.db("TimberKitchen").collection("services");
+          
+          app.get('/services', async(req, res)=>{
+               const query ={};
+               const cursor = ServicesCollection.find(query);
+               const services = await cursor.skip(3).toArray();
+               res.send(services)
+          })
      }
      finally{}
 }
