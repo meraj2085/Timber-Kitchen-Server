@@ -42,10 +42,10 @@ async function run(){
           });
 
           //Review api's
-          app.get('/reviews', async(req, res)=>{
-               const query = {};
-               const cursor = ReviewsCollection.find(query)
-               const reviews = await cursor.toArray();
+          app.get('/reviews/:id', async(req, res)=>{
+               const id = req.params.id;
+               const query = {productId : id};
+               const reviews = await ReviewsCollection.find(query).toArray()
                res.send(reviews)
           })
           app.post('/addReviews', async(req, res)=>{
