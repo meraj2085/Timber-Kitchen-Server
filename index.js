@@ -42,11 +42,12 @@ async function run(){
           });
 
           //Review api's
-          app.post('/reviews', async(req, res)=>{
+          app.post('/addReviews', async(req, res)=>{
                const review = req.body;
                const result = await ReviewsCollection.insertOne(review);
                res.send(result);
           });
+          // app.get('/reviews')
      }
      finally{}
 }
