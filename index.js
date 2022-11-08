@@ -53,6 +53,20 @@ async function run(){
                const result = await ReviewsCollection.insertOne(review);
                res.send(result);
           });
+          app.get('/myReviews', async(req, res)=>{
+               let query = {};
+               if (req.query.email) {
+                    query = { email: req.query.email };
+               }
+               const data = await ReviewsCollection.find(query).toArray();
+               res.send(data);
+          })
+          app.delete("/reviews/:id", async (req, res) => {
+               const id = req.params.id;
+               const query = { _id: ObjectId(id) };
+               const result = await ReviewsCollection.deleteOne(query);
+               res.send(result);
+          });
      }
      finally{}
 }
