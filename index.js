@@ -46,7 +46,10 @@ async function run(){
           app.get('/reviews/:id', async(req, res)=>{
                const id = req.params.id;
                const query = {productId : id};
-               const reviews = await ReviewsCollection.find(query).toArray()
+               const options ={
+                    sort: { timestamp: -1 }
+               }
+               const reviews = await ReviewsCollection.find(query, options).toArray()
                res.send(reviews)
           })
           app.get('/review/:id', async(req, res)=>{
@@ -65,7 +68,7 @@ async function run(){
                if(decoded.email !== req.query.email){
                     return res.status(403).send({message: 'Forbidden access'})
                }
-               
+
                let query = {};
                if (req.query.email) {
                     query = { email: req.query.email };
