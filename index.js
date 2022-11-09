@@ -60,7 +60,12 @@ async function run(){
                const result = await ReviewsCollection.insertOne(review);
                res.send(result);
           });
-          app.get('/myReviews', async(req, res)=>{
+          app.get('/myReviews', verifyJWT, async(req, res)=>{
+               const decoded = req.decoded;
+               if(decoded.email !== req.query.email){
+                    return res.status(403).send({message: 'Forbidden access'})
+               }
+               
                let query = {};
                if (req.query.email) {
                     query = { email: req.query.email };
@@ -86,10 +91,23 @@ async function run(){
           //JWT
           app.post('/jwt', (req, res)=>{
                const user = req.body;
-               console.log(user);
                const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'})
                res.send({token})
           })
+          function verifyJWT(req, res, next){
+               const authHeader = req.headers.authorization;
+               if(!authHeader){
+                 return res.status(401).send({message: 'Unauthorized access'})
+               }
+               const token = authHeader.split(' ')[1];
+               jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function(err, decoded){
+                 if(err){
+                   return res.status(403).send({message: 'Forbidden access'})
+                 }
+                 req.decoded = decoded;
+                 next()
+               })
+             }
      }
      finally{}
 }
