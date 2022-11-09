@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
 const app = express();
 require('dotenv').config();
 port = process.env.PORT || 5000;
@@ -80,6 +81,14 @@ async function run(){
                const updateDoc = {$set: {message: message},};
                const result = await ReviewsCollection.updateOne(query, updateDoc);
                res.send(result)
+          })
+
+          //JWT
+          app.post('/jwt', (req, res)=>{
+               const user = req.body;
+               console.log(user);
+               const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'})
+               res.send({token})
           })
      }
      finally{}
